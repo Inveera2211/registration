@@ -1,0 +1,39 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col"><%=@header[0]%></th>
+        <th scope="col"><%=@header[1]%></th>
+        <th scope="col"><%=@header[2]%></th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%@i = 2%>
+      <% @row.each do |row|%>
+      <tr class="<%=@i%>">
+
+        <td class="clm"><span><%= row["Product Name"]%></span></td>
+
+        <td><textarea class="td-area" style="display: none" rows="4" cols="50"> <%= row["Product Name"]%></textarea></td>
+        <td class="clm"><span><%= row["Product Description"]%></span></td>
+        <td><textarea class="td-area"  style= "display: none" rows="4" cols="50"><%= row["Product Description"]%></td>
+        <td class= "clm"><span><%= row["Brand Name"]%></span></td>
+        <td><textarea class="td-area" style= "display:none" rows="4" cols="50"><%= row["Brand Name"]%></textarea></td>
+        <td class="edit_csv" id= '<%=@i%>'><%= link_to "Edit", remote:true%> |
+         <%= link_to remove_row_path(row_id:@i), method: :delete, confirm: 'Delete?', class: 'link-delete', 'data-message' => 'Are you sure?', 'data-severity' => 'danger', :remote => true do %>
+          Delete
+        <% end %>
+</td>
+      </tr>
+      <%@i = @i+1 %>
+      <% end %>
+    </tbody>
+  </table>
+
+
+  <script type="text/javascript">
+    
+
+  </script>

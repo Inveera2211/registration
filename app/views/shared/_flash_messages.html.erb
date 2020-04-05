@@ -1,0 +1,23 @@
+<% if flash[:notice] %>
+  <div class="alert alert-primary alert-dismissable alert-bootstrap">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <%= flash[:notice].html_safe %>
+  </div>
+  <% flash[:notice] = nil %>
+<% elsif flash[:success] %>
+  <div class="alert alert-success alert-dismissable alert-bootstrap">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <%= flash[:success].html_safe %>
+  </div>
+  <% flash[:success] = nil %>
+<% elsif flash[:alert] %>
+  <div class="alert alert-primary alert-dismissable alert-bootstrap">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <%= flash[:alert].html_safe %>
+  </div>
+  <% flash[:alert] = nil %>
+<% end %>
+
+<script type="text/javascript">
+  $('.alert').delay(5000).fadeOut('slow');
+</script>
