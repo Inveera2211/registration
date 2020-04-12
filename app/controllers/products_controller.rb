@@ -1,3 +1,4 @@
+
 class ProductsController < ApplicationController
   def index
   	spreadsheet = Roo::Spreadsheet.open("#{Rails.root}/public/products.csv")
@@ -10,27 +11,59 @@ class ProductsController < ApplicationController
  	end
  	return @row
 
+  end
 
- 	#using database
-	# spreadsheet = Roo::Spreadsheet.open("#{Rails.root}/public/products.csv")
-	# @header = spreadsheet.row(1)
-	# Product.update_all(product_name: "", product_description: "", brand_name: "")
-	# (2..spreadsheet.last_row).each do |i|
-	# 	row = Hash[[@header, spreadsheet.row(i)].transpose]
-	#     	Product.update(product_name: row["Product Name"], product_description: row["Product Description"], brand_name: ["Brand Name"])
- # 	end
- 	
- # 	@products = Product.all
+def create
+    file = "#{Rails.root}/public/products.csv"
+    header = ["Product Name","Product Description", "Brand Name"]
+    CSV.open(file,"a") do |csv|
+    row = CSV::Row.new(header,[])
+    row["Product Name"] = params[:pn]
+    row["Product Description"] = params[:pd]
+    row["Brand Name"] = params[:bn]
+    csv << row
+    end
+    redirect_to products_path
+end 
+
+
+  def update
+  	file = "#{Rails.root}/public/products.csv"
+  	spreadsheet = Roo::CSV.new(file)
+  	row = params[:row].to_i
+
+  (1..3).each do |count|
+    column = count
+    if (count ==1)
+      data = params[:pn]
+    elsif(count == 2)
+      data = params[:pd]
+     else
+      data = params[:bn]
+     end 
+    	spreadsheet.set(row, column,data, nil)
+
+    	CSV.open(file, 'w' ) do |writer|
+    		spreadsheet.to_a.each_with_index do |a, index|
+  			 writer << a
+  		  end
+  	  end
+  end
+    redirect_to products_path
   end
 
 
   def destroy
+  	file = "#{Rails.root}/public/products.csv"
   	spreadsheet = Roo::Spreadsheet.open("#{Rails.root}/public/products.csv")
   	@header = spreadsheet.row(1)
-  	(2..spreadsheet.last_row).each do |i|
-		item = Hash[[@header, spreadsheet.row(i)].transpose]
-		byebug
- 	end
-  	
-  end	
-end
+  	data = spreadsheet.to_a
+  	data.delete_at(params[:row_id].to_i - 1)
+  	CSV.open(file, 'w' ) do |writer|
+  		data.each_with_index do |a, index|
+			writer << a
+		end
+	end
+	redirect_to products_path
+	end
+end	

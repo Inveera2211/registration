@@ -6,7 +6,12 @@ Rails.application.routes.draw do
 
   get '/products' =>  'products#index'
 
+  #put '/products/:row_id' =>  'products#update', as: :product
+  put '/products' =>  'products#update', as: :product
+  post '/products'=> 'products#create'
+
   delete '/remove_row' => 'products#destroy'
+
 
 
   devise_for :users, controllers: {

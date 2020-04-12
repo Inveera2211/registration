@@ -1,6 +1,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
   
-  <table class="table table-striped">
+  <table class="table table-striped table_id">
     <thead>
       <tr>
         <th scope="col"><%=@header[0]%></th>
@@ -11,29 +11,111 @@
     </thead>
     <tbody>
       <%@i = 2%>
+      <%@j= 1%>
       <% @row.each do |row|%>
-      <tr class="<%=@i%>">
+      <tr class="<%=@i%>" data-id = '<%=@i%>'>
 
-        <td class="clm"><span><%= row["Product Name"]%></span></td>
+        <td class="<%=@j%>" >
+          <span class="row_desc"><%= row["Product Name"]%></span>
+          <textarea class="td-area pn" rows="4" cols="25"> <%= row["Product Name"]%></textarea>
+        </td>
 
-        <td><textarea class="td-area" style="display: none" rows="4" cols="50"> <%= row["Product Name"]%></textarea></td>
-        <td class="clm"><span><%= row["Product Description"]%></span></td>
-        <td><textarea class="td-area"  style= "display: none" rows="4" cols="50"><%= row["Product Description"]%></td>
-        <td class= "clm"><span><%= row["Brand Name"]%></span></td>
-        <td><textarea class="td-area" style= "display:none" rows="4" cols="50"><%= row["Brand Name"]%></textarea></td>
-        <td class="edit_csv" id= '<%=@i%>'><%= link_to "Edit", remote:true%> |
-         <%= link_to remove_row_path(row_id:@i), method: :delete, confirm: 'Delete?', class: 'link-delete', 'data-message' => 'Are you sure?', 'data-severity' => 'danger', :remote => true do %>
-          Delete
-        <% end %>
-</td>
+        <td class="<%=@j+1%>">
+          <span class="row_desc"><%= row["Product Description"]%></span>
+          <textarea class="td-area pd" rows="4" cols="25"><%= row["Product Description"]%></textarea>
+        </td>
+        <td class="<%=@j+2%>">
+          <span class="row_desc"><%= row["Brand Name"]%></span>
+          <textarea class="td-area bn" rows="4" cols="25"><%= row["Brand Name"]%></textarea>
+        </td>
+
+        <td class="edit_csv" id= '<%=@i%>'>
+          <div class="actions row_desc">
+          <%= link_to "Edit",'javascript:;', class: "eidt_csv1"%> |
+         
+         <%= link_to 'Delete',  { action: :destroy, row_id:@i }, method: :delete, data: { confirm: 'Are you sure?' } %>
+         </div>
+         <div class="td-area"> 
+          <%= link_to "Save", 'javascript:;', class: "row_val",id: @i%>
+         </div>
+        </td>
+
       </tr>
       <%@i = @i+1 %>
+      <%@j = @j+1 %>
       <% end %>
     </tbody>
   </table>
 
 
-  <script type="text/javascript">
-    
+<button class="add_more">Addmore</button>
+<style type="text/css">
+  .td-area{
+    display:none;
+  }
+</style>
 
-  </script>
+  <script type="text/javascript">
+$(document).ready(function(){
+
+
+$(".eidt_csv1").click(function(){
+  $(this).parents('tr').find('.td-area').show();
+  $(this).parents('tr').find('.row_desc').hide();
+  });
+
+})
+
+$(".add_more").click(function(){
+  row = ($('table tr').length) + 1
+$('.add_more').hide();
+$('table tr:last').after('<tr class="'+row+'" ><td class="1"><textarea class="pn" rows="4" cols="25"> </textarea></td> <td class="2"><textarea class="pd" rows="4" cols="25"> </textarea></td> <td class="3"><textarea class="bn" rows="4" cols="25"> </textarea></td> <td> <a class="add_row" id="'+row+'" href="javascript:;">Save</a></td></tr>');
+
+});
+
+//$(".row_val").click(function(){
+$('body').delegate('.row_val','click',function() {
+
+  debugger
+  row_id = $(this).attr("id")
+  pn = $(this).parents('tr').find('.pn').val();
+  pd = $(this).parents('tr').find('.pd').val();
+  bn = $(this).parents('tr').find('.bn').val();
+  row = parseInt(row_id);
+
+  $.ajax({
+        url: '/products',
+        type: 'PUT', 
+        dataType: 'script',
+        data:{
+            pn: pn,
+            pd: pd,
+            bn: bn,
+            row: row
+        },
+    })
+});
+
+$('body').delegate('.add_row','click',function() {
+
+row_id = $(this).attr("id")
+  pn = $(this).parents('tr').find('.pn').val();
+  pd = $(this).parents('tr').find('.pd').val();
+  bn = $(this).parents('tr').find('.bn').val();
+  row = parseInt(row_id);
+
+  $.ajax({
+        url: '/products',
+        type: 'POST', 
+        dataType: 'script',
+        data:{
+            pn: pn,
+            pd: pd,
+            bn: bn,
+            row: row
+        },
+    })
+  
+})
+
+</script>
